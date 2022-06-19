@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <DocumentationFile>\bin\Debug\Backend.Api.xml</DocumentationFile>
+        <OutputPath></OutputPath>
+        <NoWarn>1701;1702;1591</NoWarn>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <DocumentationFile>bin\Release\netcoreapp2.1\Backend.Api.xml</DocumentationFile>
+        <NoWarn>1701;1702;1591</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Compile Remove="wwwroot\css\**" />
+      <Compile Remove="wwwroot\images\**" />
+      <Compile Remove="wwwroot\js\**" />
+      <Content Remove="wwwroot\css\**" />
+      <Content Remove="wwwroot\images\**" />
+      <Content Remove="wwwroot\js\**" />
+      <EmbeddedResource Remove="wwwroot\css\**" />
+      <EmbeddedResource Remove="wwwroot\images\**" />
+      <EmbeddedResource Remove="wwwroot\js\**" />
+      <None Remove="wwwroot\css\**" />
+      <None Remove="wwwroot\images\**" />
+      <None Remove="wwwroot\js\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Migrations\20190504083800_Init.cs" />
+        <Compile Remove="Migrations\20190504083800_Init.Designer.cs" />
+        <Compile Remove="Migrations\20190504084421_Init.cs" />
+        <Compile Remove="Migrations\20190504084421_Init.Designer.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AutoMapper" Version="9.0.0" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
+        <PackageReference Include="Microsoft.AspNetCore.CookiePolicy" Version="2.2.8" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.20" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.2" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="3.1.0" />
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.5" />
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="5.1.0" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="logs\" />
+        <Folder Include="wwwroot\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Reference Include="ZYSoft.DB.Helper">
+        <HintPath>Libs\ZYSoft.DB.Helper.dll</HintPath>
+      </Reference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Update="log4net.config">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+
+</Project>
