@@ -2558,7 +2558,7 @@ namespace Backend.Api.Controllers.Api.V1.Bus
                 {
                     response.SetError("绑定失败!原因：您的账号已经绑定了此微信");
                 }
-                else if (ZYSoft.DB.BLL.Common.Exist(string.Format(@"SELECT * FROM dbo.ZYSoftUserWcMapping WHERE  OpenId = '{0}'",  openId)))
+                else if (ZYSoft.DB.BLL.Common.Exist(string.Format(@"SELECT * FROM dbo.ZYSoftUserWcMapping WHERE  OpenId = '{0}'", openId)))
                 {
                     response.SetError("绑定失败!原因：此微信已经绑定了别的账号,请先解绑!");
                 }
@@ -2825,17 +2825,22 @@ namespace Backend.Api.Controllers.Api.V1.Bus
         {
             string partnerId = model.partnerId;
             string date = model.date;
+            int flag = model.flag;
+            string[] startTimes = { "07:00:00", "18:59:59" };
+            string[] endTimes = { "19:00:00", "23:59:59" };
+            string startTime = string.Format(@"{0} {1}", date, startTimes[flag]);
+            string endTime = string.Format(@"{0} {1}", date, endTimes[flag]);
             var response = ResponseModelFactory.CreateResultInstance;
             if (string.IsNullOrEmpty(date))
             {
                 date = DateTime.Now.ToString("yyyy-MM-dd");
             }
 
-            string sql = string.Format(@" SELECT '{1}' RequiredDate, t1.*,t2.name AS InvName,t2.Specification,ISNULL(t2.unitname,t2.unitname2)UnitName,t3.name AS DeptName FROM (
+            string sql = string.Format(@" SELECT '{3}' RequiredDate, t1.*,t2.name AS InvName,t2.Specification,ISNULL(t2.unitname,t2.unitname2)UnitName,t3.name AS DeptName FROM (
                     SELECT  InvId,DeptId,SUM(Quantity-ISNULL(FinishQuantity,0)) AS Qty from dbo.vPoEntry WHERE PartnerId ='{0}'
-                    AND ISNULL(Status,0) =1 AND ISNULL(IsDeleted,0) = 0 AND RequiredDate ='{1}' GROUP BY deptId,InvId) t1 
+                    AND ISNULL(Status,0) =1 AND ISNULL(IsDeleted,0) = 0 AND CreatedOn  >= '{1}' AND  CreatedOn <='{2}' GROUP BY deptId,InvId) t1 
                     LEFT JOIN  dbo.t_Inventory t2 ON t1.InvId = t2.id 
-                    LEFT JOIN  dbo.t_Department t3 ON t1.deptId = t3.id", partnerId, date);
+                    LEFT JOIN  dbo.t_Department t3 ON t1.deptId = t3.id", partnerId, startTime, endTime, date);
             var query = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
             response.SetData(query);
 
@@ -2846,6 +2851,7 @@ namespace Backend.Api.Controllers.Api.V1.Bus
         public IActionResult SubDayList(dynamic model)
         {
             string date = model.date;
+            string deptId = model.deptId;
             var response = ResponseModelFactory.CreateResultInstance;
             if (string.IsNullOrEmpty(date))
             {
@@ -2853,9 +2859,7 @@ namespace Backend.Api.Controllers.Api.V1.Bus
             }
 
             string sql = string.Format(@"SELECT Date AS RequiredDate,InvId,Name AS InvName,UnitName,Specification,Count AS Qty,
-                DeptName FROM dbo.vSubSummeryRpt WHERE [Date]='{0}' AND DeptId IN (
-					SELECT TOP 1 DeptId FROM dbo.ZYSoftUserPersonalMapping WHERE UserGuid = '{1}'
-					) ORDER BY InvId", date, AuthContextService.CurrentUser.Guid);
+                DeptName FROM dbo.vSubSummeryRpt WHERE [Date]='{0}' AND DeptId ='{1}' ORDER BY InvId", date, deptId);
             var query = ZYSoft.DB.BLL.Common.ExecuteDataTable(sql);
             response.SetData(query);
 
